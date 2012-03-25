@@ -1,0 +1,39 @@
+
+nzbapp
+
+This is a project for building a Turnkey Linux patch to configure a
+Turnkey Linux installation of Ubuntu 10.04 (initially) along with the following additions:
+
+- Musicbrainz server (in slave mode)
+
+
+NOTES
+==================================================================
+musicbrainz is configured as follows:
+- musicbrainz is served by nginx from the /var/www/musicbrainz directory
+- after deploying the system and validating network access, you must:
+    - log on as root and run "/root/setup_musicbrainz" to load
+      the database from the latest exports available at musicbrainz.org
+
+
+DONATIONS
+==================================================================
+If you want to send donations to keep this work going, please send them to
+the authours of musicbrainz and/or Turnkey Linux.
+They are the heroes in this effort, not me.
+
+
+USAGE
+==================================================================
+This patch should be applied onto version 11.3 of the 
+Turnkey core distribution found at:
+http://www.turnkeylinux.org/core
+
+This can be done be either installing the core appliance and applying the patch
+
+OR
+
+by patching the installable ISO image of the distribution
+
+tklpatch turnkey-core-11.2-lucid-x86.iso tklpatch/musicbrainz
+

@@ -1,0 +1,104 @@
+#!/bin/bash -ex
+
+HOSTNAME=musicbrainz
+USERNAME=www-data
+GROUPNAME=www-data
+DIRECTORY=/var/www/musicbrainz-server
+
+# set hostname
+echo "$HOSTNAME" > /etc/hostname
+sed -i "s|127.0.1.1 \(.*\)|127.0.1.1 $HOSTNAME|" /etc/hosts
+
+# write the directory name out
+echo "$DIRECTORY" > /etc/MUSICBRAINZ
+
+# add the python installation tools and sudo
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get -y \
+    -o DPkg::Options::=--force-confdef \
+    -o DPkg::Options::=--force-confold \
+    install python-software-properties sudo aptitude
+
+####################################################
+# INSTALL DEPENDENCIES
+####################################################
+DEBIAN_FRONTEND=noninteractive apt-get -y \
+    -o DPkg::Options::=--force-confdef \
+    -o DPkg::Options::=--force-confold \
+    install \
+    postgresql-8.4 postgresql-server-dev-8.4 postgresql-contrib \
+    git-core \
+    memcached \
+    libxml2-dev libpq-dev libexpat1-dev libdb-dev libicu-dev \
+    curl \
+    build-essential \
+    nginx
+
+####################################################
+# INSTALL MUSICBRAINZ
+####################################################
+git clone git://git.musicbrainz.org/musicbrainz-server.git $DIRECTORY 
+cd $DIRECTORY
+cp lib/DBDefs.pm.default lib/DBDefs.pm
+
+# Modify the musicbrainz configuration here
+sed -i "s|/home/httpd/musicbrainz/musicbrainz-server|$DIRECTORY|" lib/DBDefs.pm
+sed -i "s|www.musicbrainz.example.com|$HOSTNAME|" lib/DBDefs.pm
+
+
+####################################################
+# INSTALL PERL DEPENDENCIES
+####################################################
+curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+cpanm Carton
+cd $DIRECTORY
+carton install --deployment
+
+####################################################
+# MAKE POSTGRES EXTS
+####################################################
+cp /root/pg_hba.conf /etc/postgresql/8.4/main/
+cd $DIRECTORY/postgresql-musicbrainz-unaccent
+make
+make install
+cd ..
+cd $DIRECTORY/postgresql-musicbrainz-collate
+make
+make install
+cd ..
+
+
+####################################################
+# Final tasks
+####################################################
+cp /root/nginx/nginx.conf /etc/nginx
+cp /root/nginx/musicbrainz /etc/nginx/sites-available
+sed -i "s|MUSICBRAINZ|$DIRECTORY|g" /etc/nginx/sites-available/musicbrainz 
+ln -s /etc/nginx/sites-available/musicbrainz /etc/nginx/sites-enabled/musicbrainz
+rm /etc/nginx/sites-enabled/default
+cp $DIRECTORY/admin/nginx/mbserver-rewrites.conf /etc/nginx
+cp /root/service/musicbrainz /etc/init.d
+update-rc.d musicbrainz defaults
+
+# set the ownerships
+chown -R $USERNAME:$GROUPNAME $DIRECTORY
+
+# setup iptables to allow traffic on our ports
+# iptables -A INPUT -i eth0 -p tcp -m multiport --dports 8080,8081,8085 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Create the service file
+echo "MusicBrainz     http://musizbrainz" > /etc/confconsole/services.txt
+echo "Web Shell:      http://nzbapp:12320" >> /etc/confconsole/services.txt
+echo "Webmin:         http://nzbapp:12321" >> /etc/confconsole/services.txt
+echo "SMB/CIFS:       nzbapp (ports 139/445)" >> /etc/confconsole/services.txt
+echo " " >> /etc/confconsole/services.txt
+echo "IP Address:     \$ipaddr " >> /etc/confconsole/services.txt
+
+####################################################
+# done!
+####################################################
+exit
+
+
+
+

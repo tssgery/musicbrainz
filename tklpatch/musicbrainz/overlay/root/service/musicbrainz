@@ -1,0 +1,45 @@
+#!/bin/sh
+# Copyright (c) 2012 Eric Young - all rights reserved
+
+### BEGIN INIT INFO
+# Provides:          musicbrainz
+# Required-Start:    $local_fs $network $named $nginx
+# Required-Stop:     $local_fs $network $named
+# Default-Start:     2
+# Default-Stop:      
+# X-Interactive:     true
+# Short-Description: Starts the musicbrainz server
+# Description:       Starts the musicbrainz server
+### END INIT INFO
+
+DESC="MusicBrainz Server"
+NAME=musicbrainz
+DIRECTORY=`cat /etc/MUSICBRAINZ`
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_begin_msg "Starting $DESC"
+    cd $DIRECTORY
+    /usr/local/bin/carton exec -- plackup -Ilib -s FCGI --listen fcgi.socket -D
+    log_action_end_msg $?
+    ;;
+
+  stop)
+    exit 0
+    ;;
+
+  restart|reload|force-reload)
+    echo "Error: argument '$1' not supported" >&2
+    exit 3
+    ;;
+
+  *)
+    N=/etc/init.d/$NAME
+    echo "Usage: $N {start}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
