@@ -93,6 +93,9 @@ echo "Webmin:         http://nzbapp:12321" >> /etc/confconsole/services.txt
 echo "SMB/CIFS:       nzbapp (ports 139/445)" >> /etc/confconsole/services.txt
 echo " " >> /etc/confconsole/services.txt
 echo "IP Address:     \$ipaddr " >> /etc/confconsole/services.txt
+echo " " >> /etc/confconsole/services.txt
+echo "Before accessing MusicBrainz the first time, login as root and run:" >> /etc/confconsole/services.txt
+echo "     /root/setup_musicbrainz" >> /etc/confconsole/services.txt
 
 ####################################################
 # done!
