@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ -x /opt/aceshome/bin/lockme ]; then
+   . /opt/aceshome/bin/lockme
+else
+   echo "Lock script not found, this could be trouble"
+fi
+
 DIRECTORY=`cat /etc/MUSICBRAINZ`
 cd $DIRECTORY
 cd admin/replication

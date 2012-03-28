@@ -35,6 +35,11 @@ DEBIAN_FRONTEND=noninteractive apt-get -y \
     nginx
 
 ####################################################
+# INSTALL ACESHOME UTILITIES
+####################################################
+git clone git://github.com/tssgery/aceshome.git /opt/aceshome
+
+####################################################
 # INSTALL MUSICBRAINZ
 ####################################################
 git clone git://git.musicbrainz.org/musicbrainz-server.git $DIRECTORY 
@@ -44,6 +49,8 @@ cp lib/DBDefs.pm.default lib/DBDefs.pm
 # Modify the musicbrainz configuration here
 sed -i "s|/home/httpd/musicbrainz/musicbrainz-server|$DIRECTORY|" lib/DBDefs.pm
 sed -i "s|www.musicbrainz.example.com|$HOSTNAME|" lib/DBDefs.pm
+# make sure it is set to SLAVE mode
+sed -i "s|sub REPLICATION_TYPE.*|sub REPLICATION_TYPE { RT_SLAVE }|" lib/DBDefs.pm
 
 
 ####################################################
