@@ -20,4 +20,6 @@ carton exec ./admin/InitDb.pl -- --createdb --import /tmp/mb_temp/mbdump*.tar.bz
 cd /tmp
 rm -rf mb_temp
 
+# copy the cron file into place for hourly replication packets
+cp /root/musicbrainz_loadRepPackets /etc/cron.hourly
 
