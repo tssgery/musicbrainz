@@ -1,0 +1,8 @@
+#!/bin/sh
+
+DIRECTORY=`cat /etc/MUSICBRAINZ`
+cd $DIRECTORY
+cd admin/replication
+
+./LoadReplicationChanges > /var/log/musicbrainz_loadRepChanges.log
+

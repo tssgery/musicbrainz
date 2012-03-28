@@ -54,6 +54,16 @@ cpanm Carton
 cd $DIRECTORY
 carton install --deployment
 
+# perl modules for loading the replication packets
+cpanm Moose 
+cpanm aliased
+cpanm LWP::UserAgent
+cpanm Cache::Memory
+cpanm Cache::Memcached::Fast -n
+cpanm DBIx::Connector
+cpanm DBD::Pg
+
+
 ####################################################
 # MAKE POSTGRES EXTS
 ####################################################
