@@ -1,6 +1,8 @@
 #!/bin/sh
 
 DIRECTORY=`cat /etc/MUSICBRAINZ`
+git pull
+
 cd /tmp
 rm -rf mb_temp
 mkdir mb_temp
