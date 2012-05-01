@@ -16,7 +16,7 @@ echo $LATEST
 echo "getting the latest database exports from musicbrainz.org"
 wget --recursive -nd ftp://ftp.musicbrainz.org/pub/musicbrainz/data/fullexport/$LATEST/
 cd $DIRECTORY
-carton exec ./admin/InitDb.pl -- --createdb --import /tmp/mb_temp/mbdump*.tar.bz2 
+carton exec ./admin/InitDb.pl -- --createdb --import /tmp/mb_temp/mbdump*.tar.bz2 --echo | tee /tmp/setup_mb.log
 
 
 cd /tmp

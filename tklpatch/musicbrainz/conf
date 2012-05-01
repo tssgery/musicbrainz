@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash 
 
 HOSTNAME=musicbrainz
 USERNAME=www-data
@@ -47,8 +47,13 @@ cd $DIRECTORY
 cp lib/DBDefs.pm.default lib/DBDefs.pm
 
 # fixup the Makefile.PL to take the latest versions of a few modules
-sed -i "s|requires 'DBD::Pg' \(.*\)|requires 'DBD::Pg';|" Makefile.PL
-sed -i "s|'Catalyst::Plugin::ErrorCatcher' \(.*\)|'Catalyst::Plugin::ErrorCatcher',|" Makefile.PL
+# sed -i "s|requires 'DBD::Pg' \(.*\)|requires 'DBD::Pg';|" Makefile.PL
+# sed -i "s|'Net::Amazon::S3::Policy' \(.*\)|'Net::Amazon::S3::Policy';|" Makefile.PL
+# sed -i "s|'Catalyst::Plugin::ErrorCatcher' \(.*\)|'Catalyst::Plugin::ErrorCatcher',|" Makefile.PL
+
+# sed -i "s|2.18.0|2.19.2|g" carton.lock
+# sed -i "s|0.0.8.8|0.0.8.12|g" carton.lock
+
 
 # Modify the musicbrainz configuration here
 sed -i "s|/home/httpd/musicbrainz/musicbrainz-server|$DIRECTORY|" lib/DBDefs.pm
@@ -66,19 +71,22 @@ cpanm --self-upgrade
 cpanm Carton
 
 # perl modules for loading the replication packets
-#cpanm Moose 
-#cpanm aliased
-#cpanm LWP::UserAgent
-#cpanm Cache::Memory
-#cpanm Cache::Memcached::Fast -n
-#cpanm DBIx::Connector
-# cpanm DBD::Pg
+cpanm Moose 
+cpanm aliased
+cpanm LWP::UserAgent
+cpanm Cache::Memory
+cpanm Cache::Memcached::Fast -n
+cpanm DBIx::Connector
+cpanm DBD::Pg
 
 cd $DIRECTORY
-rm -rf local
-rm -rf carton.lock
-carton install
-# carton install --deployment
+# rm -rf local
+# rm -rf carton.lock
+carton install --deployment
+carton install Catalyst::Plugin::ErrorCatcher
+carton install DBD::Pg
+carton install Net::Amazon::S3::Policy
+
 
 ####################################################
 # MAKE POSTGRES EXTS
