@@ -83,6 +83,7 @@ cpanm Carton
 #cpanm DBD::Pg
 
 cd $DIRECTORY
+cat Makefile.PL | grep ^requires > cpanfile
 # rm -rf local
 # rm -rf carton.lock
 carton install --deployment
