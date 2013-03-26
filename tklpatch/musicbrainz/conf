@@ -69,9 +69,11 @@ sed -i "s|sub REPLICATION_TYPE.*|sub REPLICATION_TYPE { RT_SLAVE }|" lib/DBDefs.
 ####################################################
 # INSTALL PERL DEPENDENCIES
 ####################################################
-curl -L http://cpanmin.us | perl - --sudo App::cpanminus
-cpanm --self-upgrade
-cpanm Carton
+make
+#echo "Installing Carton via cpanm"
+#curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+#cpanm --self-upgrade
+#cpanm Carton
 
 # perl modules for loading the replication packets
 #cpanm Moose 
@@ -82,6 +84,10 @@ cpanm Carton
 #cpanm DBIx::Connector
 #cpanm DBD::Pg
 
+
+echo "*************"
+echo "Running carton to install deployment dependencies"
+echo "*************"
 cd $DIRECTORY
 cat Makefile.PL | grep ^requires > cpanfile
 # rm -rf local
@@ -95,6 +101,9 @@ carton install --deployment
 ####################################################
 # MAKE POSTGRES EXTS
 ####################################################
+echo "*************"
+echo "Configuring Postgres"
+echo "*************"
 cp /root/pg_hba.conf /etc/postgresql/8.4/main/
 cd $DIRECTORY/postgresql-musicbrainz-unaccent
 make
