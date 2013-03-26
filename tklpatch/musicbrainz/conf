@@ -32,6 +32,7 @@ DEBIAN_FRONTEND=noninteractive apt-get -y \
     libxml2-dev libpq-dev libexpat1-dev libdb-dev libicu-dev \
     curl \
     build-essential \
+    redis-server \
     nginx
 
 ####################################################
@@ -44,7 +45,9 @@ git clone git://github.com/tssgery/aceshome.git /opt/aceshome
 ####################################################
 git clone git://git.musicbrainz.org/musicbrainz-server.git $DIRECTORY 
 cd $DIRECTORY
-cp lib/DBDefs.pm.default lib/DBDefs.pm
+
+
+cp lib/DBDefs.pm.sample lib/DBDefs.pm
 
 # fixup the Makefile.PL to take the latest versions of a few modules
 # sed -i "s|requires 'DBD::Pg' \(.*\)|requires 'DBD::Pg';|" Makefile.PL
@@ -71,21 +74,21 @@ cpanm --self-upgrade
 cpanm Carton
 
 # perl modules for loading the replication packets
-cpanm Moose 
-cpanm aliased
-cpanm LWP::UserAgent
-cpanm Cache::Memory
-cpanm Cache::Memcached::Fast -n
-cpanm DBIx::Connector
-cpanm DBD::Pg
+#cpanm Moose 
+#cpanm aliased
+#cpanm LWP::UserAgent
+#cpanm Cache::Memory
+#cpanm Cache::Memcached::Fast -n
+#cpanm DBIx::Connector
+#cpanm DBD::Pg
 
 cd $DIRECTORY
 # rm -rf local
 # rm -rf carton.lock
 carton install --deployment
-carton install Catalyst::Plugin::ErrorCatcher
-carton install DBD::Pg
-carton install Net::Amazon::S3::Policy
+#carton install Catalyst::Plugin::ErrorCatcher
+#carton install DBD::Pg
+#carton install Net::Amazon::S3::Policy
 
 
 ####################################################
