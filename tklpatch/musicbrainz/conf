@@ -69,7 +69,6 @@ sed -i "s|sub REPLICATION_TYPE.*|sub REPLICATION_TYPE { RT_SLAVE }|" lib/DBDefs.
 ####################################################
 # INSTALL PERL DEPENDENCIES
 ####################################################
-make
 #echo "Installing Carton via cpanm"
 #curl -L http://cpanmin.us | perl - --sudo App::cpanminus
 #cpanm --self-upgrade
@@ -89,10 +88,12 @@ echo "*************"
 echo "Running carton to install deployment dependencies"
 echo "*************"
 cd $DIRECTORY
-cat Makefile.PL | grep ^requires > cpanfile
+perl Makefile.PL --defaultdeps
+make install
+#cat Makefile.PL | grep ^requires > cpanfile
 # rm -rf local
 # rm -rf carton.lock
-carton install --deployment
+# carton install --deployment
 #carton install Catalyst::Plugin::ErrorCatcher
 #carton install DBD::Pg
 #carton install Net::Amazon::S3::Policy
